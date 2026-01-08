@@ -13,13 +13,14 @@ export async function createUser(req, res){
         //input sanitization
 
         const hashedPassword = await bcrypt.hash(password, 10)
-        const result = await db.execute("insert into person(person_name, email, password_hash) values(?, ?, ?)", [username, email,   hashedPassword])
-        res.status(201).json({"successMessage": "user saved"})
+        const signUpResult = await db.execute("insert into person(person_name, email, password_hash) values(?, ?, ?)", [username, email,   hashedPassword])
+        return res.status(201).json({"successMessage": "user saved"})
    }catch(error){
         // 409 - duplicate entry
         // 500 - server error
         //400 - bad request
-        res.status(500).json({"errorMessage": "error saving the user"})
         console.error(error)
+        return res.status(500).json({"errorMessage": "error saving the user"})
+        
    }
 }

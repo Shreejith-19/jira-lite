@@ -19,22 +19,19 @@ export async function verifyUserAndLogin(req, res){
     try{
         const result = await db.execute("select person_id, password_hash from person where email = ? limit 1", [email])
         if(result[0].length === 0){
-            res.status(404).json({errorMessage: "wrong email or password"})
-            return
+            return res.status(404).json({errorMessage: "wrong email or password"})
         }
         const {person_id, password_hash} = result[0][0]
         const isMatch = await bcrypt.compare(password, password_hash)
         if(!isMatch){
-            res.status(404).json({errorMessage: "wrong email or password"})
-            return
+            return res.status(404).json({errorMessage: "wrong email or password"})
         }
         const payload = {person_id: person_id, email: email}
         const bearer_token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: "3h"})
-        res.status(200).json({sucessMessage: "You are logged in", token : bearer_token})
-        return
+        return res.status(200).json({sucessMessage: "You are logged in", token : bearer_token})
     }catch(error){
-        res.status(500).json({"errorMessage": "server error"})
         console.error(error)
+        return res.status(500).json({"errorMessage": "server error"})
     }
     
 }
