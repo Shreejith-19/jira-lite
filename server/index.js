@@ -5,6 +5,8 @@ import express from "express"
 import { connectDB } from './helper/db_connection.js'
 import signupRouter from "./routes/signupRouter.js"
 import loginRouter from "./routes/loginRouter.js"
+import projectRouter from "./routes/projectRouter.js"
+import { authenticateUser } from "./middleware/authenticator.js"
 
 const PORT = process.env.PORT
 const app = express()
@@ -15,6 +17,7 @@ app.use(express.urlencoded({extended: true}))
 //routing
 app.use("/api/signup", signupRouter)
 app.use("/api/login", loginRouter)
+app.use("/api/projects", projectRouter, authenticateUser)
 
 connectDB().then(()=>{
     app.listen(PORT, ()=>{
