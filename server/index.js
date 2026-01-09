@@ -17,7 +17,7 @@ app.use(express.urlencoded({extended: true}))
 //routing
 app.use("/api/signup", signupRouter)
 app.use("/api/login", loginRouter)
-app.use("/api/projects", projectRouter, authenticateUser)
+app.use("/api/projects", authenticateUser, projectRouter)
 
 connectDB().then(()=>{
     app.listen(PORT, ()=>{
