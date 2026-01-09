@@ -20,6 +20,7 @@ export async function createNewProject(req, res){
         await conn.execute("insert into project_person_role (project_id, person_id, role_id) values(?, ?, ?)", [projectId, creatorId, 1])//1 - OWNER
         await conn.execute("insert into project_person_role (project_id, person_id, role_id) values(?, ?, ?)", [projectId, creatorId, 2])//2 - ADMIN
         await conn.commit()
+        return res.status(201).json({successMessage: "Project created"})
     }catch(error){
         await conn.rollback()
         if(error.code === "ER_DUP_ENTRY"){
