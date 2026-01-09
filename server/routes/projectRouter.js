@@ -1,6 +1,7 @@
 import express from 'express'
+import { createNewProject } from '../controllers/projects.js'
 const router = express.Router()
-router.route('/api/projects/new')
-    .post()
+router.route('/new')
+    .post(createNewProject)
 
 export default router
