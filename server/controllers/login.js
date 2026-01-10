@@ -12,6 +12,7 @@ export async function verifyUserAndLogin(req, res){
       3. then check the password
       4. create bearer token with an expiry
       5. send the bearer token to client with the response
+      6. frontend will store the token in the local storage
      **/
     const {email, password} = req.body
     //input sanitization
@@ -26,7 +27,7 @@ export async function verifyUserAndLogin(req, res){
         if(!isMatch){
             return res.status(404).json({errorMessage: "wrong email or password"})
         }
-        const payload = {person_id: person_id, email: email}
+        const payload = {personId: person_id, email: email}
         const bearer_token = jwt.sign(payload, process.env.JWT_SECRET_KEY, {expiresIn: "3h"})
         return res.status(200).json({sucessMessage: "You are logged in", token : bearer_token})
     }catch(error){
