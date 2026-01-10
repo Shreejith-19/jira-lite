@@ -1,4 +1,5 @@
 import db from "../config/db.js"
+
 export async function createNewProject(req, res){
     //procedure:
     /**
@@ -17,8 +18,7 @@ export async function createNewProject(req, res){
         await conn.beginTransaction()
         const projectResult = await conn.execute("insert into project (project_name, project_code, description, created_by) values(?, ?, ?, ?)", [projectName, projectCode, description, creatorId])
         const projectId = projectResult[0].insertId
-        await conn.execute("insert into project_person_role (project_id, person_id, role_id) values(?, ?, ?)", [projectId, creatorId, 1])//1 - OWNER
-        await conn.execute("insert into project_person_role (project_id, person_id, role_id) values(?, ?, ?)", [projectId, creatorId, 2])//2 - ADMIN
+        await conn.execute("insert into project_person_role (project_id, person_id, role_id) values(?, ?, ?)", [projectId, creatorId, 1])//1 - ADMIN
         await conn.commit()
         return res.status(201).json({successMessage: "Project created"})
     }catch(error){
@@ -26,9 +26,12 @@ export async function createNewProject(req, res){
         if(error.code === "ER_DUP_ENTRY"){
             return res.status(409).json({errorMessage: "Project code exists"})
         }
+        console.error(error)
         return res.status(500).json({errorMessage: "Server Error"})
     }finally{
         conn.release()
     }
-
 }
+
+
+
