@@ -25,7 +25,6 @@ export async function createNewIssue(req, res){
         console.error(error)
         return res.status(500).json({errorMessage: "Failed to save issue"})
     }
-
 }
 
 export async function getAllBasicIssueDetails(req, res){
