@@ -18,11 +18,12 @@ export async function verifyUserAndLogin(req, res){
     //input sanitization
 
     try{
-        const result = await db.execute("select person_id, password_hash from person where email = ? limit 1", [email])
-        if(result[0].length === 0){
+        const [result] = await db.execute("select person_id, password_hash from person where email = ? limit 1", [email])
+        //user does not exist
+        if(result.length === 0){
             return res.status(404).json({errorMessage: "wrong email or password"})
         }
-        const {person_id, password_hash} = result[0][0]
+        const {person_id, password_hash} = result[0]
         const isMatch = await bcrypt.compare(password, password_hash)
         if(!isMatch){
             return res.status(404).json({errorMessage: "wrong email or password"})
