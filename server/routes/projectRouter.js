@@ -1,7 +1,9 @@
 import express from 'express'
 import { createNewProject } from '../controllers/projects.js'
 import { createNewIssue, deleteIssueById, editIssueById, getAllBasicIssueDetails, getIssueDetailsById } from '../controllers/issues.js'
-import { showAllIssuesByTypeInProject, showAllMembersInProject } from '../controllers/summary.js'
+import {showAllMembersInProject } from '../controllers/summary.js'
+import { showAllParentIssues } from '../controllers/issues.js'
+import { authorizePermission } from '../middleware/authorizor.js'
 const router = express.Router()
 
 router.route('/new')
@@ -11,10 +13,10 @@ router.route("/:projectId/boards")
     .get(getAllBasicIssueDetails)
 
 router.route('/:projectId/summary/members')
-    .get(showAllMembersInProject)//done
+    .get(authorizePermission(["PROJECT_DELETE","Proj"]), showAllMembersInProject)//done
 
-router.route('/:projectId/summary/issues/:issueType')
-    .get(showAllIssuesByTypeInProject)//done
+router.route('/:projectId/issues/child')// frontend reqs to /:projectId/issues/child?childType=
+    .get(showAllParentIssues) //partially done - testing
 
 router.route('/:projectId/issues/:issueId')
     .get(getIssueDetailsById)
