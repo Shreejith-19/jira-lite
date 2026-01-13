@@ -19,7 +19,7 @@ export function authorizePermission(requiredPerm){
 
             const [permResult] = await db.execute("select p.perm_code from permission p join role_permission rp on p.perm_id = rp.perm_id where role_id = ?",[roleId])
             const permCodes = permResult.map(item => {return item.perm_code})
-            const isAllowed = requiredPerm.every(perm => permCodes.includes(perm))
+            const isAllowed = requiredPerm.some(perm => permCodes.includes(perm))
             if(!isAllowed){
                 return res.status(403).json({Message: "Operation not allowed"})
             }
