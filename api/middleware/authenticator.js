@@ -13,7 +13,7 @@ export function authenticateUser(req, res, next){
     const rawToken = req.headers.authorization// bearer <token>
     const encodedPayload = rawToken.split(" ")[1]
     const decodedPaylaod = jwt.verify(encodedPayload, process.env.JWT_SECRET_KEY)
-    req.user = decodedPaylaod
+    req.user = decodedPaylaod //personId, email
     next()
    } catch (error) {
     console.error(error)
