@@ -12,13 +12,14 @@ export async function createNewIssue(req, res){
      **/
     const projectId = req.params.projectId 
     const creatorId = req.user.personId
-    console.log(projectId)
-    console.log(creatorId)
     const {title, description, issueType, parentId, priority, assignee} = req.body
     //for optinal fields
     // ?? - nullish operator if undefined use this instead 
     const parentIssueId = parentId ?? null // if-else cannot be used incase projectId is zero
     const assigneeId = assignee ?? null
+
+    //Task: validate child-parent relation before write
+
     try {
         await db.execute("insert into issue(project_id, title, description, issue_type, parent_issue_id, priority, assignee_id, created_by) values(?, ?, ?, ?, ?, ?, ?, ?)", [projectId, title, description, issueType, parentIssueId, priority, assigneeId, creatorId])
         return res.status(201).json({message: "new issue created"})
@@ -40,8 +41,11 @@ export async function showAllParentIssues(req, res){
         return res.status(400).json({errorMessage: "Invalid child or No parent type"})
     }
     try {
-        const [parentResult] = await db.execute("select issue_id, title from issue where project_id = ? and issue_type = ?", [projectId, parentType])
-        console.log(parentResult)
+        const [parents] = await db.execute("select issue_id, title from issue where project_id = ? and issue_type = ?", [projectId, parentType])
+        if (parents.length === 0){
+            return res.status(404).json({Message: "No Parent Found"})
+        }
+        return res.status(200).json(parents)
     } catch (error) {
         return res.status(404).json({message: "no parent found"})
     }
