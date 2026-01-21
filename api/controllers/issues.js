@@ -52,11 +52,18 @@ export async function showAllParentIssues(req, res){
 }
 
 export async function getAllBasicIssueDetails(req, res){
+    //title, type, priority, assigneenmame
 
 }
 
 export async function getIssueDetailsById(req, res){
-
+    const {issueId} = req.body
+    try {
+        const [issueResult] =  await db.execute("select * from issue where issue_id = ?", [issueId])
+        return res.status(200).json(issueResult)
+    } catch (error) {
+        return res.status(404).json({message: "issue not found"})
+    }
 }
 
 export async function editIssueById(req, res){
@@ -64,5 +71,5 @@ export async function editIssueById(req, res){
 }
 
 export async function deleteIssueById(req, res){
-
+    
 }
